@@ -40,7 +40,6 @@ public class StaffAPI {
 				.build();
 	}
 	@GetMapping("/getAll")
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseDTO<List<StaffDTO>> getAll() {
 		return ResponseDTO.<List<StaffDTO>>builder().code(String.valueOf(HttpStatus.OK.value())).data(StaffService.getAll())
 				.build();

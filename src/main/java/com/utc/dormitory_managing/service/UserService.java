@@ -1,5 +1,7 @@
 package com.utc.dormitory_managing.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -7,6 +9,10 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,6 +23,8 @@ import org.zalando.problem.Status;
 
 import com.utc.dormitory_managing.apis.error.BadRequestAlertException;
 import com.utc.dormitory_managing.configuration.ApplicationProperties;
+import com.utc.dormitory_managing.dto.ResponseDTO;
+import com.utc.dormitory_managing.dto.SearchDTO;
 import com.utc.dormitory_managing.dto.UserDTO;
 import com.utc.dormitory_managing.entity.User;
 import com.utc.dormitory_managing.repository.UserRepo;
@@ -27,8 +35,6 @@ import jakarta.transaction.Transactional;
 public interface UserService {
 	UserDTO create(UserDTO userDTO);
 
-	UserDTO findByName(String name);
-
 	Boolean delete(String id);
 
 	Boolean deleteAll(List<String> ids);
@@ -38,10 +44,10 @@ public interface UserService {
 	UserDTO get(String id);
 
 	UserDTO updatePassword(UserDTO userDTO);
-
-//	List<UserDTO> search(SearchDTO searchDTO);
 	
 	UserDTO update(UserDTO userDTO);
+	
+	ResponseDTO<List<UserDTO>> search(SearchDTO searchDTO);
 	
 }
 
@@ -68,9 +74,9 @@ class UserServiceImpl implements UserService {
 			String user_id = UUID.randomUUID().toString().replaceAll("-", "");
 			user.setUserId(user_id);
 			user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
-			if(userDTO.getExpired()<=0 || user.getExpired()==null) user.setExpired((long)props.getExpiredTime()*12);
+			if(userDTO.getExpired()<=0 || user.getExpired()==null) user.setExpired(Long.parseLong(props.getExpiredTime())*12);
 			else {
-				user.setExpired((long)props.getExpiredTime()* user.getExpired());
+				user.setExpired(Long.parseLong(props.getExpiredTime())* user.getExpired());
 			}
 			// commit save
 			userRepo.save(user);
@@ -82,13 +88,6 @@ class UserServiceImpl implements UserService {
 			throw Problem.builder().withStatus(Status.SERVICE_UNAVAILABLE).withDetail("SERVICE_UNAVAILABLE").build();
 		}
 	}
-
-	@Override
-	public UserDTO findByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override
 	@Transactional
@@ -132,36 +131,6 @@ class UserServiceImpl implements UserService {
 
 	}
 
-//	@Override
-//	public List<UserDTO> search(SearchDTO searchDTO) {
-//		try {
-//			List<Sort.Order> orders = Optional.ofNullable(searchDTO.getOrders()).orElseGet(Collections::emptyList)
-//					.stream().map(order -> {
-//						if (order.getOrder().equals(SearchDTO.ASC))
-//							return Sort.Order.asc(order.getProperty());
-//
-//						return Sort.Order.desc(order.getProperty());
-//					}).collect(Collectors.toList());
-//
-//			Pageable pageable = PageRequest.of(searchDTO.getPage(), searchDTO.getSize(), Sort.by(orders));
-//
-//			Page<User> page = userRepo.search(searchDTO.getValue(), pageable);
-//
-//			List<UserResponse> userDTOList = new ArrayList<>();
-//
-//			for (User user : page.getContent()) {
-//				UserResponse userResponse = new ModelMapper().map(user, UserResponse.class);
-//				userDTOList.add(userResponse);
-//			}
-//
-//			return userDTOList;
-//		} catch (ResourceAccessException e) {
-//			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
-//		} catch (HttpServerErrorException | HttpClientErrorException e) {
-//			throw Problem.builder().withStatus(Status.SERVICE_UNAVAILABLE).withDetail("SERVICE_UNAVAILABLE").build();
-//		}
-//	}
-
 	@Override
 	public List<UserDTO> getAll() {
 		ModelMapper mapper = new ModelMapper();
@@ -196,6 +165,40 @@ class UserServiceImpl implements UserService {
 		if(userOptional.isEmpty()) return false;
 		userRepo.deleteById(id);
 		return true;
+		} catch (ResourceAccessException e) {
+			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
+		} catch (HttpServerErrorException | HttpClientErrorException e) {
+			throw Problem.builder().withStatus(Status.SERVICE_UNAVAILABLE).withDetail("SERVICE_UNAVAILABLE").build();
+		}
+	}
+
+	@Override
+	public ResponseDTO<List<UserDTO>> search(SearchDTO searchDTO) {
+		try {
+//			List<Sort.Order> orders = Optional.ofNullable(searchDTO.getOrders()).orElseGet(Collections::emptyList)
+//					.stream().map(order -> {
+//						if (order.getOrder().equals(SearchDTO.ASC))
+//							return Sort.Order.asc(order.getProperty());
+//
+//						return Sort.Order.desc(order.getProperty());
+//					}).collect(Collectors.toList());
+//
+//			Pageable pageable = PageRequest.of(searchDTO.getPage(), searchDTO.getSize(), Sort.by(orders));
+//
+////			Page<User> page = userRepo.search(searchDTO.getValue(), pageable);
+//
+//			List<UserDTO> userDTOList = new ArrayList<>();
+//
+//			for (User user : page.getContent()) {
+//				UserDTO userResponse = new ModelMapper().map(user, UserDTO.class);
+//				userDTOList.add(userResponse);
+//			}
+//
+//			ResponseDTO<List<UserDTO>> responseDTO = new ModelMapper().map(page, ResponseDTO.class);
+//			responseDTO.setData(userDTOList);
+//
+//			return responseDTO;
+			return null;
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
 		} catch (HttpServerErrorException | HttpClientErrorException e) {

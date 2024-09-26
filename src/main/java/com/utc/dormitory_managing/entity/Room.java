@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "room")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper= false)
+@EqualsAndHashCode(callSuper= false, exclude = { "floor", "roomType"})
 
 public class Room extends BaseModel{
 	private static final long serialVersionUID = 1L;

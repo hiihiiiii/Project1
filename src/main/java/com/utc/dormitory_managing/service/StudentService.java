@@ -2,6 +2,7 @@ package com.utc.dormitory_managing.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -14,10 +15,16 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
 import com.utc.dormitory_managing.apis.error.BadRequestAlertException;
+import com.utc.dormitory_managing.configuration.ApplicationProperties;
+import com.utc.dormitory_managing.dto.ResponseDTO;
+import com.utc.dormitory_managing.dto.SearchDTO;
 import com.utc.dormitory_managing.dto.StudentDTO;
+import com.utc.dormitory_managing.dto.UserDTO;
 import com.utc.dormitory_managing.entity.Student;
 import com.utc.dormitory_managing.entity.User;
 import com.utc.dormitory_managing.repository.StudentRepo;
+import com.utc.dormitory_managing.repository.UserRepo;
+import com.utc.dormitory_managing.utils.Utils;
 
 public interface StudentService {
 	StudentDTO create(StudentDTO studentDTO);
@@ -25,21 +32,33 @@ public interface StudentService {
 	Boolean delete(String id);
 	StudentDTO get(String id);
 	List<StudentDTO> getAll();
+	ResponseDTO<List<Student>> search(SearchDTO searchDTO);
 }
 @Service
 class StudentServiceImpl implements StudentService {
 	
 	@Autowired
 	private StudentRepo studentRepo;
+	@Autowired
+	private UserRepo userRepo;
+	
+	@Autowired
+	private ApplicationProperties props;
 	
 	@Override
 	public StudentDTO create(StudentDTO studentDTO) {
 		try {
 			ModelMapper mapper = new ModelMapper();
 			Optional<Student> studentOptional = studentRepo.findById(studentDTO.getStudentId());
-			if(studentOptional.isEmpty()) throw new BadRequestAlertException("Not Found Student", "student", "missing");
+			if(studentOptional.isPresent()) throw new BadRequestAlertException("Not Found Student", "student", "missing");
 			Student student = mapper.map(studentDTO, Student.class);
-			User user = studentOptional.get().getUser();
+			UserDTO userDTO = new UserDTO();
+			userDTO.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
+			userDTO.setUsername(studentDTO.getStudentEmail());
+			userDTO.setPassword(Utils.convertDateToString(studentDTO.getDateOfBirth()));
+			userDTO.setExpired(Long.parseLong(props.getExpiredTime())*12);
+			User user = mapper.map(userDTO, User.class);
+			userRepo.save(user);
 			student.setUser(user);
 			studentRepo.save(student);
 			return studentDTO;
@@ -110,6 +129,12 @@ class StudentServiceImpl implements StudentService {
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
 			throw Problem.builder().withStatus(Status.SERVICE_UNAVAILABLE).withDetail("SERVICE_UNAVAILABLE").build();
 		}
+	}
+
+	@Override
+	public ResponseDTO<List<Student>> search(SearchDTO searchDTO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

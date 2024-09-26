@@ -49,12 +49,8 @@ class AuthServiceImpl implements AuthService {
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 			// Set thông tin authentication vào Security Context
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			System.err.println("securitycontext");
 			String accessToken = tokenProvider.generateAccessToken(authentication);
-			System.err.println(accessToken);
 			String refreshToken = tokenProvider.generateRefreshToken(authentication);
-
-//			System.err.println(user.getAccessToken());
 			
 			user.setAccessToken(accessToken);
 			user.setRefreshToken(refreshToken);

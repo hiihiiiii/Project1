@@ -2,6 +2,7 @@ package com.utc.dormitory_managing.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -14,10 +15,14 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
 import com.utc.dormitory_managing.apis.error.BadRequestAlertException;
+import com.utc.dormitory_managing.configuration.ApplicationProperties;
 import com.utc.dormitory_managing.dto.StaffDTO;
+import com.utc.dormitory_managing.dto.UserDTO;
 import com.utc.dormitory_managing.entity.Staff;
 import com.utc.dormitory_managing.entity.User;
 import com.utc.dormitory_managing.repository.StaffRepo;
+import com.utc.dormitory_managing.repository.UserRepo;
+import com.utc.dormitory_managing.utils.Utils;
 
 public interface StaffService {
 	StaffDTO create(StaffDTO StaffDTO);
@@ -31,17 +36,26 @@ class StaffServiceImpl implements StaffService {
 	
 	@Autowired
 	private StaffRepo StaffRepo;
+	@Autowired
+	private UserRepo userRepo;
+	@Autowired
+	private ApplicationProperties props;
 	
 	@Override
 	public StaffDTO create(StaffDTO staffDTO) {
 		try {
 			ModelMapper mapper = new ModelMapper();
-			Optional<Staff> StaffOptional = StaffRepo.findById(staffDTO.getStaffId());
-			if(StaffOptional.isEmpty()) throw new BadRequestAlertException("Not Found Staff", "Staff", "missing");
-			Staff Staff = mapper.map(staffDTO, Staff.class);
-			User user = StaffOptional.get().getUser();
-			Staff.setUser(user);
-			StaffRepo.save(Staff);
+			Staff staff = mapper.map(staffDTO, Staff.class);
+			staff.setStaffId(UUID.randomUUID().toString());
+			UserDTO userDTO = new UserDTO();
+			userDTO.setUserId(UUID.randomUUID().toString());
+			userDTO.setUsername(staff.getStaffEmail());
+			userDTO.setPassword(Utils.convertDateToString(staff.getDateOfBirth()));
+			userDTO.setExpired(Long.parseLong(props.getExpiredTime())*12);
+			User user = mapper.map(userDTO, User.class);
+			userRepo.save(user);
+			staff.setUser(user);
+			StaffRepo.save(staff);
 			return staffDTO;
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();

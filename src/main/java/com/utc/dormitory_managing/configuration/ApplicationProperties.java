@@ -9,5 +9,6 @@ import lombok.Data;
 @Data
 public class ApplicationProperties {
 	@Value("${app.expiredTime}")
-	private int expiredTime;
+	private String expiredTime;
+	
 }

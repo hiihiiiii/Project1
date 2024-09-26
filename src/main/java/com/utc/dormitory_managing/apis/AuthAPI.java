@@ -67,8 +67,6 @@ public class AuthAPI {
 
 			UserDTO userDTO = new ModelMapper().map(user, UserDTO.class);
 			userService.create(userDTO);
-			
-//			String pass = new BCryptPasswordEncoder().encode(userSignUp.getPassword());
 					
 
 			LoginRequest loginRequest = new LoginRequest();

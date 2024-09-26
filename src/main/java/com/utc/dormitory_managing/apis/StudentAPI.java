@@ -40,7 +40,6 @@ public class StudentAPI {
 				.build();
 	}
 	@GetMapping("/getAll")
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseDTO<List<StudentDTO>> getAll() {
 		return ResponseDTO.<List<StudentDTO>>builder().code(String.valueOf(HttpStatus.OK.value())).data(studentService.getAll())
 				.build();

@@ -30,10 +30,10 @@ public class JwtUtils {
 	private String jwtSecret;
 
 	@Value("${app.jwtExpirationAT}")
-	private int jwtExpirationAT;
+	private String jwtExpirationAT;
 
 	@Value("${app.jwtExpirationRT}")
-	private int jwtExpirationRT;
+	private String jwtExpirationRT;
 	
 	@Autowired
 	private UserRepo userRepo;
@@ -51,10 +51,8 @@ public class JwtUtils {
 	  
 	  	UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 		Date now = new Date();
-		Date expiryDate = new Date(now.getTime() + jwtExpirationAT);
-		
-		key();
-		System.err.println("key");
+		Long jwt = Long.parseLong(jwtExpirationAT);
+		Date expiryDate = new Date(now.getTime() + jwt);
 		
 		String accessToken = Jwts.builder().setSubject(userPrincipal.getId())
 				.setIssuedAt(new Date())
@@ -69,8 +67,8 @@ public class JwtUtils {
 	    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
 		Date now = new Date();
-		Date expiryDate = new Date(now.getTime() + jwtExpirationRT);
-
+		Long jwt = Long.parseLong(jwtExpirationRT);
+		Date expiryDate = new Date(now.getTime() + jwt);
 		return Jwts.builder().setSubject(String.valueOf(userPrincipal.getId())).setIssuedAt(new Date())
 				.setExpiration(expiryDate)
 				.setId(UUID.randomUUID().toString())

@@ -15,31 +15,30 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
 import com.utc.dormitory_managing.apis.error.BadRequestAlertException;
-import com.utc.dormitory_managing.dto.RoomTypeDTO;
-import com.utc.dormitory_managing.entity.RoomType;
-import com.utc.dormitory_managing.repository.RoomTypeRepo;
-
-public interface RoomTypeService {
-	RoomTypeDTO create(RoomTypeDTO roomTypeDTO);
-	RoomTypeDTO update(RoomTypeDTO roomTypeDTO);
+import com.utc.dormitory_managing.dto.RequirementDTO;
+import com.utc.dormitory_managing.entity.Requirement;
+import com.utc.dormitory_managing.repository.RequirementRepo;
+public interface RequirementService {
+	RequirementDTO create(RequirementDTO RequirementDTO);
+	RequirementDTO update(RequirementDTO RequirementDTO);
 	Boolean delete(String id);
-	RoomTypeDTO get(String id);
-	List<RoomTypeDTO> getAll();
+	RequirementDTO get(String id);
+	List<RequirementDTO> getAll();
 }
 @Service
-class RoomTypeServiceImpl implements RoomTypeService {
+class RequirementServiceImpl implements RequirementService {
 
 	@Autowired
-	private RoomTypeRepo RoomTypeRepo;
+	private RequirementRepo RequirementRepo;
 	
 	@Override
-	public RoomTypeDTO create(RoomTypeDTO RoomTypeDTO) {
+	public RequirementDTO create(RequirementDTO RequirementDTO) {
 		try {
 			ModelMapper mapper = new ModelMapper();
-			RoomType RoomType = mapper.map(RoomTypeDTO, RoomType.class);
-			RoomType.setRoomTypeId(UUID.randomUUID().toString());
-			RoomTypeRepo.save(RoomType);
-			return RoomTypeDTO;
+			Requirement Requirement = mapper.map(RequirementDTO, Requirement.class);
+			Requirement.setRequirementId(UUID.randomUUID().toString());
+			RequirementRepo.save(Requirement);
+			return RequirementDTO;
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
@@ -48,14 +47,14 @@ class RoomTypeServiceImpl implements RoomTypeService {
 	}
 
 	@Override
-	public RoomTypeDTO update(RoomTypeDTO RoomTypeDTO) {
+	public RequirementDTO update(RequirementDTO RequirementDTO) {
 		try {
 			ModelMapper mapper = new ModelMapper();
-			Optional<RoomType> RoomTypeOptional = RoomTypeRepo.findById(RoomTypeDTO.getRoomTypeId());
-			if(RoomTypeOptional.isEmpty()) throw new BadRequestAlertException("Not Found RoomType", "RoomType", "missing");
-			RoomType RoomType = mapper.map(RoomTypeDTO, RoomType.class);
-			RoomTypeRepo.save(RoomType);
-			return RoomTypeDTO;
+			Optional<Requirement> RequirementOptional = RequirementRepo.findById(RequirementDTO.getRequirementId());
+			if(RequirementOptional.isEmpty()) throw new BadRequestAlertException("Not Found Requirement", "Requirement", "missing");
+			Requirement Requirement = mapper.map(RequirementDTO, Requirement.class);
+			RequirementRepo.save(Requirement);
+			return RequirementDTO;
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
@@ -66,9 +65,9 @@ class RoomTypeServiceImpl implements RoomTypeService {
 	@Override
 	public Boolean delete(String id) {
 		try {
-			Optional<RoomType> RoomTypeOptional = RoomTypeRepo.findById(id);
-			if(RoomTypeOptional.isEmpty()) return false;
-			RoomTypeRepo.deleteById(id);
+			Optional<Requirement> RequirementOptional = RequirementRepo.findById(id);
+			if(RequirementOptional.isEmpty()) return false;
+			RequirementRepo.deleteById(id);
 			return true;
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
@@ -78,12 +77,12 @@ class RoomTypeServiceImpl implements RoomTypeService {
 	}
 
 	@Override
-	public RoomTypeDTO get(String id) {
+	public RequirementDTO get(String id) {
 		try {
 			ModelMapper mapper = new ModelMapper();
-			Optional<RoomType> RoomTypeOptional = RoomTypeRepo.findById(id);
-			if(RoomTypeOptional.isEmpty()) throw new BadRequestAlertException("Not Found RoomType", "RoomType", "missing");
-			return mapper.map(RoomTypeOptional.get(), RoomTypeDTO.class);
+			Optional<Requirement> RequirementOptional = RequirementRepo.findById(id);
+			if(RequirementOptional.isEmpty()) throw new BadRequestAlertException("Not Found Requirement", "Requirement", "missing");
+			return mapper.map(RequirementOptional.get(), RequirementDTO.class);
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
 		} catch (HttpServerErrorException | HttpClientErrorException e) {
@@ -93,12 +92,12 @@ class RoomTypeServiceImpl implements RoomTypeService {
 	}
 
 	@Override
-	public List<RoomTypeDTO> getAll() {
+	public List<RequirementDTO> getAll() {
 		
 		try {
 			ModelMapper mapper = new ModelMapper();
-			List<RoomType> RoomTypes = RoomTypeRepo.findAll();
-			return RoomTypes.stream().map(s -> mapper.map(s, RoomTypeDTO.class))
+			List<Requirement> Requirements = RequirementRepo.findAll();
+			return Requirements.stream().map(s -> mapper.map(s, RequirementDTO.class))
 					.collect(Collectors.toList());
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();
@@ -106,6 +105,5 @@ class RoomTypeServiceImpl implements RoomTypeService {
 			throw Problem.builder().withStatus(Status.SERVICE_UNAVAILABLE).withDetail("SERVICE_UNAVAILABLE").build();
 		}
 	}
-
 	
 }

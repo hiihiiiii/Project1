@@ -5,12 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ServiceDTO {
-	private String serviceId;
-
-	private String serviceName;
-
-	private Long servicePrice;
+@NoArgsConstructor
+public class RequirementDTO {
+	private String requirementId;
+	
+	private String requirementName;
+	
+	private String requirementDescription;
 }

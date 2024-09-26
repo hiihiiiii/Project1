@@ -50,7 +50,6 @@ public class UserAPI {
 				.build();
 	}
 	@GetMapping("/getAll")
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseDTO<List<UserDTO>> getAll() {
 		return ResponseDTO.<List<UserDTO>>builder().code(String.valueOf(HttpStatus.OK.value())).data(userService.getAll())
 				.build();
@@ -61,14 +60,13 @@ public class UserAPI {
 		userService.updatePassword(userDTO);
 		return ResponseDTO.<Void>builder().code(String.valueOf(HttpStatus.OK.value())).build();
 	}
-
-//	@PostMapping("/search")
-////	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	public ResponseDTO<List<UserResponse>> search(@RequestBody @Valid SearchDTO searchDTO) {
-//		return ResponseDTO.<List<UserResponse>>builder().code(String.valueOf(HttpStatus.OK.value()))
-//				.data(userService.search(searchDTO)).build();
-////		return userService.search(searchDTO);
-//	}
+	
+	@PutMapping("/update")
+	public ResponseDTO<UserDTO> update(@ModelAttribute @Valid UserDTO userDTO) throws IOException {
+		userService.updatePassword(userDTO);
+		return ResponseDTO.<UserDTO>builder().code(String.valueOf(HttpStatus.OK.value())).data(userService.update(userDTO))
+				.build();
+	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseDTO<Void> delete(@PathVariable(value = "id") String id) throws URISyntaxException {
