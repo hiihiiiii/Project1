@@ -42,19 +42,22 @@ public class Contract extends BaseModel{
 	
 	@ManyToOne
 	@JoinColumn(name ="room_id")
-	private Room room;
-	
-	//service tu cac phong va service bo sung
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "service_roomType", joinColumns = @JoinColumn (name = "room_type_id"), inverseJoinColumns = @JoinColumn(name = "service_id"))
-	private Set<Services> services;
-	
+	private RoomType roomType;
+//	
 	@Column
 	//chi phí miễn giảm
 	private Long reduceCost;
 	
+	//tien coc
+	@Column
+	private Long deposit;
+	
 	@Column
 	private Date startDate;
+	
+	//thanh tien
+	@Column
+	private Long contractRent;
 	
 	@Column
 	private Date endDate;

@@ -15,7 +15,7 @@ public class RoomDTO {
 	
 	private String roomName;
 	
-	private String buildingDescription;
+	private String roomDes;
 	
 	private RoomType roomType;
 	

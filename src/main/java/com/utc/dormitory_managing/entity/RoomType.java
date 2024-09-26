@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "room_type")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper= false, exclude = {"services"})
+@EqualsAndHashCode(callSuper= false)
 
 public class RoomType extends BaseModel{
 	private static final long serialVersionUID = 1L;
@@ -36,16 +36,13 @@ public class RoomType extends BaseModel{
 	@Column(name= "room_type_des")
 	private String roomTypeDes;
 	
+	//tinh tien theo dau nguoi
 	@Column(name= "room_type_price")
 	private Long roomTypePrice;
 	
-	@Column
+	@Column(name= "room_type_number")
 	//suc chua toi da
-	private int roomNumber;
-	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "service_roomType", joinColumns = @JoinColumn (name = "room_type_id"), inverseJoinColumns = @JoinColumn(name = "service_id"))
-	private Set<Services> services;
+	private int roomTypeNumber;
 	
 	
 	

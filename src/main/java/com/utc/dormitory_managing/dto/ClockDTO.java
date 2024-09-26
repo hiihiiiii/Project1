@@ -3,9 +3,6 @@ package com.utc.dormitory_managing.dto;
 import java.util.Date;
 
 import com.utc.dormitory_managing.entity.Room;
-//import com.utc.dormitory_managing.entity.Services;
-import com.utc.dormitory_managing.entity.Staff;
-import com.utc.dormitory_managing.entity.Student;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,18 +11,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContractDTO {
-	private String contractId;
+public class ClockDTO {
+	private String clockId;
 	
-	private Student student;
+	private String electronicName;
 	
-	private Staff staff;
+	private String clockDes;
 	
 	private Room room;
 	
-	private Long reduceCost;
+	private int previosIndex;
+	
+	private int lastIndex;
 	
 	private Date startDate;
 	
 	private Date endDate;
+	
+	private Long value;
 }

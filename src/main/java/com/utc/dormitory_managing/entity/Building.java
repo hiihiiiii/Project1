@@ -28,4 +28,7 @@ public class Building extends BaseModel{
 	@Column(name= "building_des")
 	private String buildingDescription;
 	
+	@Column(name="building_gender")
+	private Boolean buildingGender;
+	
 }

@@ -28,7 +28,7 @@ public class Room extends BaseModel{
 	private String roomName;
 	
 	@Column(name= "room_des")
-	private String buildingDescription;
+	private String roomDes;
 	
 	@ManyToOne
 	@JoinColumn(name = "room_type_id")
@@ -37,9 +37,6 @@ public class Room extends BaseModel{
 	@ManyToOne
 	@JoinColumn(name = "floor_id")
 	private Floor floor;
-	
-	@Column
-	private int maxNumber;
 	
 	@Column
 	private int roomNumber;

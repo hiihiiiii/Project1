@@ -32,5 +32,5 @@ public class Services extends BaseModel {
 	private Long serviceValue;
 	
 	@Column
-	private Boolean servicePrivate;
+	private Long serviceNumber;
 }
