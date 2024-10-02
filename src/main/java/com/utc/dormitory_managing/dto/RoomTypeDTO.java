@@ -19,5 +19,7 @@ public class RoomTypeDTO {
 	
 	private Long roomTypePrice;
 	
+	private Long roomTypeDeposit;
+	
 	private int roomNumber;
 }

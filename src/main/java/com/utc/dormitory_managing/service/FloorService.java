@@ -14,9 +14,14 @@ import org.springframework.web.client.ResourceAccessException;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 
+import com.utc.dormitory_managing.repository.BuildingRepo;
 import com.utc.dormitory_managing.repository.FloorRepo;
+
+import jakarta.persistence.NoResultException;
+
 import com.utc.dormitory_managing.apis.error.BadRequestAlertException;
 import com.utc.dormitory_managing.dto.FloorDTO;
+import com.utc.dormitory_managing.entity.Building;
 import com.utc.dormitory_managing.entity.Floor;
 
 public interface FloorService {
@@ -32,12 +37,17 @@ class FloorServiceImpl implements FloorService {
 	@Autowired
 	private FloorRepo FloorRepo;
 	
+	@Autowired
+	private BuildingRepo buildingRepo;
+	
 	@Override
 	public FloorDTO create(FloorDTO FloorDTO) {
 		try {
 			ModelMapper mapper = new ModelMapper();
 			Floor Floor = mapper.map(FloorDTO, Floor.class);
+			Building building = buildingRepo.findById(FloorDTO.getBuilding().getBuildingId()).orElseThrow(NoResultException::new);
 			Floor.setFloorId(UUID.randomUUID().toString());
+			Floor.setBuilding(building);
 			FloorRepo.save(Floor);
 			return FloorDTO;
 		} catch (ResourceAccessException e) {

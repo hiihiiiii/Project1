@@ -16,8 +16,14 @@ import org.zalando.problem.Status;
 
 import com.utc.dormitory_managing.apis.error.BadRequestAlertException;
 import com.utc.dormitory_managing.dto.RoomDTO;
+import com.utc.dormitory_managing.entity.Floor;
 import com.utc.dormitory_managing.entity.Room;
+import com.utc.dormitory_managing.entity.RoomType;
+import com.utc.dormitory_managing.repository.FloorRepo;
 import com.utc.dormitory_managing.repository.RoomRepo;
+import com.utc.dormitory_managing.repository.RoomTypeRepo;
+
+import jakarta.persistence.NoResultException;
 
 public interface RoomService {
 	RoomDTO create(RoomDTO roomDTO);
@@ -32,12 +38,22 @@ class RoomServiceImpl implements RoomService {
 	@Autowired
 	private RoomRepo RoomRepo;
 	
+	@Autowired
+	private RoomTypeRepo roomTypeRepo;
+	
+	@Autowired
+	private FloorRepo floorRepo;
+	
 	@Override
 	public RoomDTO create(RoomDTO RoomDTO) {
 		try {
 			ModelMapper mapper = new ModelMapper();
 			Room Room = mapper.map(RoomDTO, Room.class);
+			RoomType roomType = roomTypeRepo.findById(RoomDTO.getRoomType().getRoomTypeId()).orElseThrow(NoResultException::new);
+			Floor floor = floorRepo.findById(RoomDTO.getFloor().getFloorId()).orElseThrow(NoResultException::new);
 			Room.setRoomId(UUID.randomUUID().toString());
+			Room.setRoomType(roomType);
+			Room.setFloor(floor);
 			RoomRepo.save(Room);
 			return RoomDTO;
 		} catch (ResourceAccessException e) {

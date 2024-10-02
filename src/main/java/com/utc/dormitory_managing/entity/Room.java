@@ -44,4 +44,7 @@ public class Room extends BaseModel{
 	@Column
 	private String roomStatus;
 	
+	@Column
+	private Boolean roomValid;
+	
 }

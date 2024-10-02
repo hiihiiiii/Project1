@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BuildingDTO {
-	private String buildingId;
-	private String buildingName;
-	private String buildingDescription;
-	private Boolean buildingGender;
+public class BookingDTO {
+	private StudentDTO studentDTO;
+	private RoomTypeDTO roomTypeDTO;
 }
