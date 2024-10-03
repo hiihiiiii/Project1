@@ -14,4 +14,7 @@ public interface ContractRepo extends JpaRepository<Contract, String>  {
 	
 	@Query("SELECT a from Contract a where a.contractStatus = :y")
 	List<Contract> findContractByStatus(@Param("y") String contractStatus);
+	
+	@Query("SELECT a from Contract a where a.roomType.roomTypeId = :x and a.contractStatus = :y")
+	List<Contract> findContractByStatusAndRoomType(@Param("x") String roomTypeId,@Param("y") String contractStatus);
 }

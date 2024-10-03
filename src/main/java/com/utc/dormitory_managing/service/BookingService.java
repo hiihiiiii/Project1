@@ -3,6 +3,7 @@ package com.utc.dormitory_managing.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,7 @@ import com.utc.dormitory_managing.dto.ContractDTO;
 import com.utc.dormitory_managing.dto.RoomTypeDTO;
 import com.utc.dormitory_managing.dto.StudentDTO;
 import com.utc.dormitory_managing.entity.Contract;
+import com.utc.dormitory_managing.entity.Room;
 import com.utc.dormitory_managing.entity.RoomType;
 import com.utc.dormitory_managing.entity.Student;
 import com.utc.dormitory_managing.repository.ContractRepo;
@@ -42,7 +44,7 @@ public interface BookingService {
 	
 	String checkIn(StudentDTO studentDTO, RoomTypeDTO roomTypeDTO);
 	
-	void RoomSoft();
+	void RoomSoft(RoomTypeDTO roomTypeDTO);
 	
 }
 @Service
@@ -118,12 +120,26 @@ class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public void RoomSoft() {
+	public void RoomSoft(RoomTypeDTO roomTypeDTO) {
 		try {
-			List<Contract> contracts = contractRepo.findContractByStatus(StatusContractRef.WAITING.toString());
+			if(!roomTypeRepo.existsById(roomTypeDTO.getRoomTypeId())) throw new BadRequestAlertException("Not Found RoomTypeId", "RoomType", "Not Found");
+			List<Contract> contracts = contractRepo.findContractByStatusAndRoomType(roomTypeDTO.getRoomTypeId(),StatusContractRef.ACTIVE.toString());
+			List<Room> rooms = roomRepo.findByRoomType(roomTypeDTO.getRoomTypeId());
+			if(rooms.size()==0) return;
 			if(contracts.size()==0) return;
-			for (Contract contract : contracts) {
-				
+			// Tạo đối tượng Random
+	        Random random = new Random();
+			for (Room room : rooms) {
+				int i = room.getRoomNumber();
+				while(i< roomTypeDTO.getRoomNumber()|| contracts.size()>0) {
+					int r = random.nextInt(contracts.size());
+					room.getStudents().add(contracts.get(r).getStudent());
+					contracts.remove(r);
+					i++;
+				}
+				room.setRoomNumber(i);
+				room.setRoomValid(false);
+				roomRepo.save(room);
 			}
 		} catch (ResourceAccessException e) {
 			throw Problem.builder().withStatus(Status.EXPECTATION_FAILED).withDetail("ResourceAccessException").build();

@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "student")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false, exclude = {"user"})
+@EqualsAndHashCode(callSuper = false, exclude = {"user", "room"})
 public class Student extends BaseModel{
 	
 	private static final long serialVersionUID = 1L;
@@ -61,4 +62,8 @@ public class Student extends BaseModel{
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "userId", referencedColumnName = "user_id")
 	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="room_id")
+    private Room room;
 }

@@ -4,10 +4,12 @@ import java.net.URISyntaxException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.service.annotation.GetExchange;
 
 import com.utc.dormitory_managing.dto.BookingDTO;
 import com.utc.dormitory_managing.dto.BuildingDTO;
@@ -30,6 +32,11 @@ public class BookingAPI {
 	public ResponseDTO<String> checkIn(@RequestBody @Valid BookingDTO bookingDTO) throws URISyntaxException {
 		String e= bookingService.checkIn(bookingDTO.getStudentDTO(), bookingDTO.getRoomTypeDTO());
 		return ResponseDTO.<String>builder().code(String.valueOf(HttpStatus.OK.value())).data(e).build();
-
+	}
+	
+	@GetMapping("/roomSoft")
+	public ResponseDTO<Void> Soft(@RequestBody @Valid RoomTypeDTO roomTypeDTO) throws URISyntaxException {
+		bookingService.RoomSoft(roomTypeDTO);
+		return ResponseDTO.<Void>builder().code(String.valueOf(HttpStatus.OK.value())).build();
 	}
 }

@@ -1,10 +1,15 @@
 package com.utc.dormitory_managing.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "room")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper= false, exclude = { "floor", "roomType"})
+@EqualsAndHashCode(callSuper= false, exclude = { "floor", "roomType", "students"})
 
 public class Room extends BaseModel{
 	private static final long serialVersionUID = 1L;
@@ -46,5 +51,8 @@ public class Room extends BaseModel{
 	
 	@Column
 	private Boolean roomValid;
+	
+	@OneToMany(mappedBy="room")
+    private Set<Student> students = new HashSet<Student>();
 	
 }

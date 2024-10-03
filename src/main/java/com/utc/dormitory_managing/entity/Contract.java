@@ -36,7 +36,7 @@ public class Contract extends BaseModel{
 	private Staff staff;
 	
 	@ManyToOne
-	@JoinColumn(name ="room_id")
+	@JoinColumn(name ="room_type_id")
 	private RoomType roomType;
 //	
 	@Column
