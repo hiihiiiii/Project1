@@ -3,14 +3,12 @@ package com.utc.dormitory_managing.apis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.utc.dormitory_managing.dto.MailRequestDTO;
 import com.utc.dormitory_managing.service.MailService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/email")
 public class MailAPI {
